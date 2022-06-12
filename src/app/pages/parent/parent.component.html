@@ -1,1 +1,4 @@
-<app-child></app-child>
+<app-child [value]="valueChange" (value)="addRegister($event)"></app-child>
+<button mat-stroked-button color="primary" (click)="valueChanges()">
+  Asignar
+</button>

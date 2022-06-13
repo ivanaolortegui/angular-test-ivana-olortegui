@@ -1,4 +1,11 @@
-<app-child [value]="valueChange" (value)="addRegister($event)"></app-child>
-<button mat-stroked-button color="primary" (click)="valueChanges()">
-  Asignar
-</button>
+<div class="container">
+  <app-child [value]="valueChange" (value)="addRegister($event)"></app-child>
+  <button
+    class="container__btn"
+    mat-stroked-button
+    color="primary"
+    (click)="valueChanges()"
+  >
+    Asignar valores por defecto a formulario
+  </button>
+</div>

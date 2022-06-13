@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Usernterface } from 'src/app/services';
+import { user_validation } from './child.constants';
 
 @Component({
   selector: 'app-child',
@@ -8,13 +9,33 @@ import { ErrorStateMatcher } from '@angular/material/core';
   styleUrls: ['./child.component.scss']
 })
 export class ChildComponent implements OnInit {
-  formSignup: FormGroup;
+  get formControls() {
+    return this.formSignup.controls;
+  }
 
   @Input('value') inputValue: any;
-  @Output('value') outputValue: EventEmitter<any> = new EventEmitter();
-  constructor(private fb: FormBuilder) {
+  @Output('value') outputValue: EventEmitter<Usernterface> = new EventEmitter();
 
-    this.formSignup = this.fb.group({
+  formSignup: FormGroup;
+
+  user_validation_messages = user_validation;
+
+  constructor(private fb: FormBuilder) {
+    this.formSignup = this.initForm();
+  }
+
+
+  ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: any) {
+    if (!changes.inputValue.firstChange) {
+      this.formSignup.setValue({ ...this.inputValue })
+    }
+
+  }
+  initForm(): FormGroup {
+    return this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
       lastname: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
@@ -26,41 +47,14 @@ export class ChildComponent implements OnInit {
     });
   }
 
-
-  ngOnInit(): void {
-
-  }
-
-  ngOnChanges(changes: any) {
-    if (!changes.inputValue.firstChange) {
-
-      this.formSignup.setValue({ ...this.inputValue })
-    }
-    console.log(changes);
-  }
-
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-
-  matcher = new MyErrorStateMatcher();
-
   register() {
-
-    const data = this.formSignup.value;
-    /*  const data = {
-       name: 'Jessica', lastname: 'Olortegui', email: 'angular@qservus.com',
-       password: 'angularV13'
-     } */
-    this.outputValue.emit(data);
-    console.log(data);
+    if (this.formSignup.valid) {
+      const data = this.formSignup.value;
+      this.outputValue.emit(data);
+      this.formSignup.reset();
+      this.formSignup = this.initForm();
+      this.formSignup.value.setErrors(null);
+    }
   }
 
-
-}
-
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
 }

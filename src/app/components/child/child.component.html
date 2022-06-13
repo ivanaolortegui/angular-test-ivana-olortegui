@@ -1,13 +1,29 @@
-<div class="container">
-  <h2 class="text-center">Formulario de Usuario</h2>
-  <form [formGroup]="formSignup" class="form">
+<div class="content">
+  <h2 class="content__title">Formulario de Usuario</h2>
+  <form [formGroup]="formSignup" class="content__form">
     <mat-form-field appearance="fill">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" placeholder="Nombre" />
+      <mat-error *ngFor="let validation of user_validation_messages.name">
+        <mat-error
+          class="error-message"
+          *ngIf="formControls['name'].hasError(validation.type)"
+        >
+          {{ validation.message }}
+        </mat-error>
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Apellidos</mat-label>
       <input matInput formControlName="lastname" />
+      <mat-error *ngFor="let validation of user_validation_messages.lastname">
+        <mat-error
+          class="error-message"
+          *ngIf="formControls['lastname'].hasError(validation.type)"
+        >
+          {{ validation.message }}
+        </mat-error>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
@@ -16,26 +32,31 @@
         type="email"
         matInput
         formControlName="email"
-        [errorStateMatcher]="matcher"
         placeholder="Correo"
       />
-      <mat-error
-        *ngIf="
-          emailFormControl.hasError('email') &&
-          !emailFormControl.hasError('required')
-        "
-      >
-        Please enter a valid email address
-      </mat-error>
-      <mat-error *ngIf="emailFormControl.hasError('required')">
-        Email is <strong>required</strong>
+      <mat-error *ngFor="let validation of user_validation_messages.email">
+        <mat-error
+          class="error-message"
+          *ngIf="formControls['email'].hasError(validation.type)"
+        >
+          {{ validation.message }}
+        </mat-error>
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Contraseña</mat-label>
       <input matInput formControlName="password" placeholder="Contraseña*" />
+      <mat-error *ngFor="let validation of user_validation_messages.password">
+        <mat-error
+          class="error-message"
+          *ngIf="formControls['password'].hasError(validation.type)"
+        >
+          {{ validation.message }}
+        </mat-error>
+      </mat-error>
     </mat-form-field>
     <button
+      class="content__form-btn"
       mat-stroked-button
       type="submit"
       color="primary"
@@ -44,6 +65,4 @@
       Registar
     </button>
   </form>
-
-  {{ inputValue | json }}
 </div>
